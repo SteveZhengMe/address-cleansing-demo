@@ -1,0 +1,103 @@
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${AWS::StackName}
+        - ResourceName: Api
+      StageName: Prod
+      DefinitionBody:
+        openapi: '3.0'
+        info: {}
+        paths:
+          /gen:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressCleansing.Arn}/invocations
+              responses: {}
+          /cleanse/gpt:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressGenerator.Arn}/invocations
+              responses: {}
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true
+      Auth:
+        Authorizers:
+          auth:
+            FunctionArn: !GetAtt auth.Arn
+        DefaultAuthorizer: auth
+  auth:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: auth
+      CodeUri: src/auth
+      Handler: handler.handler
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 5
+      Tracing: Active
+  authLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${auth}
+  addressCleansing:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: addressCleansing
+      CodeUri: src/cleansing
+      Handler: handler.handler
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Layers:
+        - aws-lambda-powertools-python-layer
+      Events:
+        ApiPOSTgen:
+          Type: Api
+          Properties:
+            Path: /gen
+            Method: POST
+            RestApiId: !Ref Api
+  addressCleansingLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${addressCleansing}
+  addressGenerator:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: addressGenerator
+      CodeUri: src/testing
+      Handler: handler.handler
+      Runtime: python3.9
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Layers:
+        - aws-lambda-powertools-python-layer
+      Events:
+        ApiPOSTcleansegpt:
+          Type: Api
+          Properties:
+            Path: /cleanse/gpt
+            Method: POST
+            RestApiId: !Ref Api
+  addressGeneratorLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${addressGenerator}
