@@ -1,10 +1,21 @@
 Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    MemorySize: 128
+    Timeout: 30
+    Handler: app.lambda_handler
+    Runtime: python3.11
+    Architectures:
+        - x86_64
+    Layers:
+        - arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:40
+
 Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
       Name: !Sub
-        - ${ResourceName} From Stack ${AWS::StackName}
+        - ${AWS::StackName} - ${ResourceName}
         - ResourceName: Api
       StageName: Prod
       DefinitionBody:
@@ -36,33 +47,40 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
+        - Stack ${AWS::StackName} - ${ResourceName}
         - ResourceName: auth
       CodeUri: src/auth
-      Handler: handler.handler
-      Runtime: python3.9
-      MemorySize: 128
-      Timeout: 5
-      Tracing: Active
   authLogGroup:
     Type: AWS::Logs::LogGroup
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub /aws/lambda/${auth}
+      LogGroupName: !Sub /aws/lambda/addr-clnse/${auth}
   addressCleansing:
     Type: AWS::Serverless::Function
     Properties:
       Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
+        - Stack ${AWS::StackName} - ${ResourceName}
         - ResourceName: addressCleansing
       CodeUri: src/cleansing
-      Handler: handler.handler
-      Runtime: python3.9
-      MemorySize: 128
-      Timeout: 30
-      Tracing: Active
-      Layers:
-        - aws-lambda-powertools-python-layer
+      Events:
+        ApiPOSTcleanse:
+          Type: Api
+          Properties:
+            Path: /cleanse/{proxy+}
+            Method: POST
+            RestApiId: !Ref Api
+  addressCleansingLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub /aws/lambda/addr-clnse/${addressCleansing}
+  addressGenerator:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} - ${ResourceName}
+        - ResourceName: addressGenerator
+      CodeUri: src/addrgen
       Events:
         ApiPOSTgen:
           Type: Api
@@ -70,34 +88,28 @@ Resources:
             Path: /gen
             Method: POST
             RestApiId: !Ref Api
-  addressCleansingLogGroup:
-    Type: AWS::Logs::LogGroup
-    DeletionPolicy: Retain
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${addressCleansing}
-  addressGenerator:
-    Type: AWS::Serverless::Function
-    Properties:
-      Description: !Sub
-        - Stack ${AWS::StackName} Function ${ResourceName}
-        - ResourceName: addressGenerator
-      CodeUri: src/testing
-      Handler: handler.handler
-      Runtime: python3.9
-      MemorySize: 128
-      Timeout: 30
-      Tracing: Active
-      Layers:
-        - aws-lambda-powertools-python-layer
-      Events:
-        ApiPOSTcleansegpt:
-          Type: Api
-          Properties:
-            Path: /cleanse/gpt
-            Method: POST
-            RestApiId: !Ref Api
   addressGeneratorLogGroup:
     Type: AWS::Logs::LogGroup
-    DeletionPolicy: Retain
+    DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub /aws/lambda/${addressGenerator}
+      LogGroupName: !Sub /aws/lambda/addr-clnse/${addressGenerator}
+
+Outputs:
+  auth:
+    Description: auth Lambda Function ARN
+    Value: !GetAtt auth.Arn
+  authIamRole:
+    Description: Implicit IAM Role created for auth function
+    Value: !GetAtt authRole.Arn
+  addressCleansing:
+    Description: addressCleansing Lambda Function ARN
+    Value: !GetAtt addressCleansing.Arn
+  addressCleansingIamRole:
+    Description: Implicit IAM Role created for addressCleansing function
+    Value: !GetAtt addressCleansingRole.Arn
+  addressGenerator:
+    Description: addressGenerator Lambda Function ARN
+    Value: !GetAtt addressGenerator.Arn
+  addressGeneratorIamRole:
+    Description: Implicit IAM Role created for addressGenerator function
+    Value: !GetAtt addressGeneratorRole.Arn
