@@ -21,3 +21,4 @@ tasks:
     command: >
       pip install awscli
       pip install aws-sam-cli
+      aws configure set region us-east-1
