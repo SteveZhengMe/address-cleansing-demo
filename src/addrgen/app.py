@@ -1,6 +1,6 @@
 import json
 
-def lambda_handler():
+def lambda_handler(event, context):
     print("In Addrgen Handler")
     return {
         'statusCode': 200,
