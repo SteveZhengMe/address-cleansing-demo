@@ -41,10 +41,13 @@ Resources:
       EndpointConfiguration: REGIONAL
       TracingEnabled: false
       Auth:
+        DefaultAuthorizer: auth
         Authorizers:
           auth:
             FunctionArn: !GetAtt auth.Arn
-        DefaultAuthorizer: auth
+            Identity:
+              Header: auth
+              ReauthorizeEvery: 300
   auth:
     Type: AWS::Serverless::Function
     Properties:

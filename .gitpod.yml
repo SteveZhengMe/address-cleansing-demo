@@ -8,6 +8,7 @@ vscode:
         - ms-azuretools.vscode-docker
         - VisualStudioExptTeam.vscodeintellicode
         - esbenp.prettier-vscode
+        - humao.rest-client
 tasks:
   # many tasks will run in parallel or use "gp sync-await and gp sync-done."
   - name: Install poetry and dependencies, then export libraries and use pip to install them
