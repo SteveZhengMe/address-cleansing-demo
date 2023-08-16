@@ -9,6 +9,10 @@ Globals:
         - x86_64
     Layers:
         - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:40
+    Environment:
+      Variables:
+        LOG_LEVEL: INFO
+        openai_key: '{{resolve:ssm:dev__openai:1}}'
 
 Resources:
   Api:
@@ -97,6 +101,10 @@ Resources:
             RestApiId: !Ref Api
       Policies:
         - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          sys_mpt: As a senior individual, you may struggle with placing the address parts in the correct locations when sending mail to friends.
+          usr_mpt: Please provide three [[address_in]] addresses [[language]], including apartment or street numbers, street names, provinces, country, postal codes, and any other relevant information. Please feel free to mix up the format and leave out some details to simulate realistic handwriting. Each address should be written on a separate line.
   addressGeneratorLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete

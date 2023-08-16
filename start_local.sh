@@ -1,4 +1,4 @@
 #! /bin/bash
 
 poetry run sam build --use-container
-poetry run sam deploy --no-confirm-changeset
+poetry run sam local start-api

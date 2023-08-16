@@ -1,11 +1,15 @@
+@host_aws = https://addr-clns.pilotworks.live
+@host_local = http://127.0.0.1:3000
+@host={{host_local}}
+
 ### Generate Addresses
-POST https://addr-clns.pilotworks.live/gen HTTP/1.1
+POST {{host}}/gen HTTP/1.1
 content-type: application/json
 User-Agent: rest-client
 auth: aaa
 
 {
-    "country": "Canada",
+    "address_in": "Canadian",
     "format": "JSON",
-    "in_language": "English"
+    "language": "in English"
 }
