@@ -104,7 +104,7 @@ Resources:
       Environment:
         Variables:
           sys_mpt: As a senior individual, you may struggle with placing the address parts in the correct locations when sending mail to friends.
-          usr_mpt: Please provide three [[address_in]] addresses [[language]], including apartment or street numbers, street names, provinces, country, postal codes, and any other relevant information. Please feel free to mix up the format and leave out some details to simulate realistic handwriting. Each address should be written on a separate line.
+          usr_mpt: Please provide five [[address_in]] addresses [[language]], including apartment or street numbers, street names, provinces, country, postal codes, and any other relevant information. Please mix up the address format and leave out some details to simulate realistic handwriting. You should return five lines, each containing a complete address. For example, "123 Main St, New York, NY 10001, USA". No other content should be returned. Please do not add sequence numbers to each address.
   addressGeneratorLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete

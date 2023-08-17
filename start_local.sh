@@ -1,4 +1,13 @@
 #! /bin/bash
 
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+cp requirements.txt src/addrgen/requirements.txt
+cp requirements.txt src/cleansing/requirements.txt
+mv requirements.txt src/auth/requirements.txt
+
 poetry run sam build --use-container
 poetry run sam local start-api
+
+rm src/addrgen/requirements.txt
+rm src/cleansing/requirements.txt
+rm src/auth/requirements.txt
