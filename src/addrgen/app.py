@@ -25,8 +25,11 @@ def lambda_handler(event, context):
     response = ""
     if body_json["format"].lower() == "json":
         address_dict = {}
-        address_dict["addresses"] = addresses_list
-        response = json.dumps(address_dict)
+        # add a sequence number to each address and put them in a dict, sequence number is key (str), address is value (str)
+        for i, address in enumerate(addresses_list):
+            address_dict[str(i+1)] = address
+            
+        response = json.dumps(address_dict, ensure_ascii=False)
     else:
         response = '\n'.join(addresses_list)
     

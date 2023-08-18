@@ -6,10 +6,25 @@
 POST {{host}}/gen HTTP/1.1
 content-type: application/json
 User-Agent: rest-client
-auth: aaa
+auth: dgf834-20230830
 
 {
-    "address_in": "Canadian",
+    "address_in": "Chinese",
     "format": "JSON",
-    "language": "in English"
+    "language": "in Chinese"
+}
+
+### Cleanse Addresses
+POST {{host}}/cleanse/gpt HTTP/1.1
+content-type: application/json
+User-Agent: rest-client
+Accept-Encoding: *
+auth: dgf834-20230830
+
+{
+    "1":"123 Main St, ON, Toronto, Canada, M5V 2B7",
+    "2":"V6G 1C4 789 Elm St, Apt 456, Vancouver, BC",
+    "3":"To Steve Montreal QC 567 Apple St Canada H3B 1C8",
+    "4":"987 Maple St Calgary AB",
+    "5":"Oak 654 Ottawa Ontario K1N 5W5 Canada"
 }

@@ -80,6 +80,10 @@ Resources:
             RestApiId: !Ref Api
       Policies:
         - AWSLambdaBasicExecutionRole
+      Environment:
+        Variables:
+          sys_mpt: As a robot working at Canada Post, my main responsibility is to format addresses. I specialize in formatting irregular addresses into JSON.
+          usr_mpt: 'If the language of the address is not English, please [[keep_or_translate]] before proceeding. In case the address cannot be found, kindly enter "NA". Afterward, generate a JSON return that follows this structure.: {"1":{"original": "123 Main St, Toronto, ON, Canada, M5V 2B7", "cleansed":{"apartment_number": "NA", "street_number": "123", "street_name": "Main St", "province": "Toronto", "country": "Canada", "postcode": "M5V 2B7"}}, "2":{"original": "Apt 456, 789 Elm St, Vancouver, BC. V6G 1C4", "cleansed":{"apartment_number": "456", "street_number": "789", "street_name": "Elm St", "province": "Vancouver", "country": "Canada", "postcode": "V6G 1C4"}...}. Your output must only be JSON, without any supplementary content or explanation. Please utilize the provided input below:\r\n-------------'
   addressCleansingLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
@@ -104,7 +108,7 @@ Resources:
       Environment:
         Variables:
           sys_mpt: As a senior individual, you may struggle with placing the address parts in the correct locations when sending mail to friends.
-          usr_mpt: Please provide five [[address_in]] addresses [[language]], including apartment or street numbers, street names, provinces, country, postal codes, and any other relevant information. Please mix up the address format and leave out some details to simulate realistic handwriting. You should return five lines, each containing a complete address. For example, "123 Main St, New York, NY 10001, USA". No other content should be returned. Please do not add sequence numbers to each address.
+          usr_mpt: Please provide five [[address_in]] addresses [[language]], including apartment or street numbers, street names, provinces, country, postal codes, and any other relevant information. Please mix up the address format and leave out some details to simulate realistic handwriting. You should return five lines, each containing a complete address. No other content should be returned. Please do not add sequence numbers to each address.
   addressGeneratorLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
