@@ -22,9 +22,22 @@ Accept-Encoding: *
 auth: dgf834-20230830
 
 {
-    "1":"123 Main St, ON, Toronto, Canada, M5V 2B7",
-    "2":"V6G 1C4 789 Elm St, Apt 456, Vancouver, BC",
-    "3":"To Steve Montreal QC 567 Apple St Canada H3B 1C8",
-    "4":"987 Maple St Calgary AB",
-    "5":"Oak 654 Ottawa Ontario K1N 5W5 Canada"
+    "params": {
+        "translate_output": "false"
+    },
+    "addresses": 
+    {
+        "1":"123 Main St, ON, Toronto, Canada, M5V 2B7",
+        "2":"V6G 1C4 789 Elm St, Apt 456, Vancouver, BC",
+        "3":"To Steve Montreal QC 567 Apple St Canada H3B 1C8",
+        "4":"987 Maple St Calgary AB",
+        "5":"Oak 654 Ottawa Ontario K1N 5W5 Canada"
+    }
+    # {
+    #     "1": "北京市朝阳区建国门外大街10号院",
+    #     "2": "四川省成都市武侯区天府大道中段",
+    #     "3": "广东省深圳市福田区华强北路",
+    #     "4": "江苏省南京市鼓楼区中山东路",
+    #     "5": "山东省青岛市市南区香港中路"
+    # }
 }

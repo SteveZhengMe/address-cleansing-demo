@@ -18,9 +18,7 @@ Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub
-        - ${AWS::StackName} - ${ResourceName}
-        - ResourceName: Api
+      Name: !Sub ${AWS::StackName} - Api
       StageName: Prod
       DefinitionBody:
         openapi: '3.0'
@@ -42,7 +40,8 @@ Resources:
                 uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressCleansing.Arn}/invocations
                 credentials: !Sub arn:aws:iam::${AWS::AccountId}:role/ApiGatewayInvokeLambdaRole
               responses: {}
-      EndpointConfiguration: REGIONAL
+      EndpointConfiguration: 
+        Type: REGIONAL
       TracingEnabled: false
       Auth:
         DefaultAuthorizer: auth
@@ -55,9 +54,7 @@ Resources:
   auth:
     Type: AWS::Serverless::Function
     Properties:
-      Description: !Sub
-        - Stack ${AWS::StackName} - ${ResourceName}
-        - ResourceName: auth
+      Description: !Sub Stack ${AWS::StackName} - auth
       CodeUri: src/auth
   authLogGroup:
     Type: AWS::Logs::LogGroup
@@ -67,9 +64,7 @@ Resources:
   addressCleansing:
     Type: AWS::Serverless::Function
     Properties:
-      Description: !Sub
-        - Stack ${AWS::StackName} - ${ResourceName}
-        - ResourceName: addressCleansing
+      Description: !Sub Stack ${AWS::StackName} - addressCleansing
       CodeUri: src/cleansing
       Events:
         ApiPOSTcleanse:
@@ -83,7 +78,7 @@ Resources:
       Environment:
         Variables:
           sys_mpt: As a robot working at Canada Post, my main responsibility is to format addresses. I specialize in formatting irregular addresses into JSON.
-          usr_mpt: 'If the language of the address is not English, please [[keep_or_translate]] before proceeding. In case the address cannot be found, kindly enter "NA". Afterward, generate a JSON return that follows this structure.: {"1":{"original": "123 Main St, Toronto, ON, Canada, M5V 2B7", "cleansed":{"apartment_number": "NA", "street_number": "123", "street_name": "Main St", "province": "Toronto", "country": "Canada", "postcode": "M5V 2B7"}}, "2":{"original": "Apt 456, 789 Elm St, Vancouver, BC. V6G 1C4", "cleansed":{"apartment_number": "456", "street_number": "789", "street_name": "Elm St", "province": "Vancouver", "country": "Canada", "postcode": "V6G 1C4"}...}. Your output must only be JSON, without any supplementary content or explanation. Please utilize the provided input below:\r\n-------------'
+          usr_mpt: 'If the language of the address is not English, please [[keep_or_translate]] before proceeding. In case the address cannot be found, kindly enter "NA". Afterward, generate a JSON return that follows this structure.: {"1":{"original": "123 Main St, Toronto, ON, Canada, M5V 2B7", "cleansed":{"apartment_number": "NA", "street_number": "123", "street_name": "Main St", "province": "Toronto", "country": "Canada", "postcode": "M5V 2B7"}}, "2":{"original": "Apt 456, 789 Elm St, Vancouver, BC. V6G 1C4", "cleansed":{"apartment_number": "456", "street_number": "789", "street_name": "Elm St", "province": "Vancouver", "country": "Canada", "postcode": "V6G 1C4"}...}. Your output must only be JSON, without any supplementary content or explanation. Please utilize the provided input below:-------------'
   addressCleansingLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
@@ -92,9 +87,7 @@ Resources:
   addressGenerator:
     Type: AWS::Serverless::Function
     Properties:
-      Description: !Sub
-        - Stack ${AWS::StackName} - ${ResourceName}
-        - ResourceName: addressGenerator
+      Description: !Sub Stack ${AWS::StackName} - addressGenerator
       CodeUri: src/addrgen
       Events:
         ApiPOSTgen:
