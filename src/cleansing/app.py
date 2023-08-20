@@ -69,7 +69,7 @@ def openai_handler():
             time.sleep(2*(i+1))
             continue
     
-    #print(cleansed_addresses)
+    print(cleansed_addresses)
 
     # we cannot return JSON here because the cleansed_addresses may have non-English characters
     return Response(

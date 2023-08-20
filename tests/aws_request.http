@@ -1,17 +1,17 @@
 @host_aws = https://addr-clns.pilotworks.live
 @host_local = http://127.0.0.1:3000
-@host={{host_local}}
+@host={{host_aws}}
 
 ### Generate Addresses
 POST {{host}}/gen HTTP/1.1
 content-type: application/json
 User-Agent: rest-client
-auth: dgf834-20230830
+auth: dgf834-20230831
 
 {
-    "address_in": "Chinese",
+    "address_in": "French",
     "format": "JSON",
-    "language": "in Chinese"
+    "language": "in French"
 }
 
 ### Cleanse Addresses
@@ -19,20 +19,20 @@ POST {{host}}/cleanse/gpt HTTP/1.1
 content-type: application/json
 User-Agent: rest-client
 Accept-Encoding: *
-auth: dgf834-20230830
+auth: dgf834-20230831
 
 {
     "params": {
-        "translate_output": "false"
+        "translate_output": "true"
     },
     "addresses": 
-    {
-        "1":"123 Main St, ON, Toronto, Canada, M5V 2B7",
-        "2":"V6G 1C4 789 Elm St, Apt 456, Vancouver, BC",
-        "3":"To Steve Montreal QC 567 Apple St Canada H3B 1C8",
-        "4":"987 Maple St Calgary AB",
-        "5":"Oak 654 Ottawa Ontario K1N 5W5 Canada"
-    }
+    # {
+    #     "1":"123 Main St, ON, Toronto, Canada, M5V 2B7",
+    #     "2":"V6G 1C4 789 Elm St, Apt 456, Vancouver, BC",
+    #     "3":"To Steve Montreal QC 567 Apple St Canada H3B 1C8",
+    #     "4":"987 Maple St Calgary AB",
+    #     "5":"Oak 654 Ottawa Ontario K1N 5W5 Canada"
+    # }
     # {
     #     "1": "北京市朝阳区建国门外大街10号院",
     #     "2": "四川省成都市武侯区天府大道中段",
@@ -40,4 +40,11 @@ auth: dgf834-20230830
     #     "4": "江苏省南京市鼓楼区中山东路",
     #     "5": "山东省青岛市市南区香港中路"
     # }
+    {
+        "1": "27 Rue de la Liberté, Paris, 75001 France",
+        "2": "14 Avenue des Champs-Élysées, Nice, 06000 France",
+        "3": "5 Place de la Concorde, Bordeaux, 33000 France",
+        "4": "3 Rue du Pont-Neuf, Lyon, Rhône-Alpes, France",
+        "5": "8 Rue de la République, Marseille, 13001 France"
+    }
 }

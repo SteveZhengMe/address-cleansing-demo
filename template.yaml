@@ -50,7 +50,7 @@ Resources:
             FunctionArn: !GetAtt auth.Arn
             Identity:
               Header: auth
-              ReauthorizeEvery: 300
+              ReauthorizeEvery: 120
   auth:
     Type: AWS::Serverless::Function
     Properties:
