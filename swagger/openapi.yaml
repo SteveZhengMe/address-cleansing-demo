@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is a address cleansing demo.
+  version: "1.0.2"
+  title: Address Cleansing Demo
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://addr-clns.pilotworks.live'
+paths:
+  /gen:
+    post:
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: '!Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressGenerator.Arn}/invocations'
+        credentials: '!Sub arn:aws:iam::${AWS::AccountId}:role/ApiGatewayInvokeLambdaRole'
+      summary: Generate
+      description: >-
+        Generate five addresses
+      operationId: gen_address
+      requestBody:
+        $ref: '#/components/requestBodies/GenAddressParams'
+      responses:
+        '200':
+          description: generated addresses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesList'
+        default:
+          description: all other errors
+      security: 
+        - api_key: []
+  '/cleanse/{method}':
+    post:
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        uri: '!Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressCleansing.Arn}/invocations'
+        credentials: '!Sub arn:aws:iam::${AWS::AccountId}:role/ApiGatewayInvokeLambdaRole'
+      summary: Format/Cleanse
+      description: >-
+        Use the {method} to cleanse and format the input addresses to JSON string.
+      operationId: cleanse_address
+      parameters:
+        - name: method
+          in: path
+          description: method to use.
+          required: true
+          schema:
+            type: string
+            enum:
+              - gpt
+      requestBody:
+        $ref: '#/components/requestBodies/CleanseAddressParams'
+      responses:
+        '200':
+          description: cleansed addresses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleansedAddressesList'
+        default:
+          description: all other errors
+      security: 
+        - api_key: []
+externalDocs:
+  description: Find the source code at GitHub.
+  url: 'https://github.com/SteveZhengMe/address-cleansing-demo'
+components:
+  schemas:
+    GenParams:
+      type: object
+      properties:
+        address_in:
+          type: string
+        format:
+          type: string
+        language:
+          type: string
+    cleanseParams:
+      type: object
+      properties:
+        params:
+          type: object
+          properties:
+            translate_output:
+              type: string
+              enum: 
+                - 'true'
+                - 'false'
+        addresses:
+          type: array
+          items:
+            type: object
+            properties:
+              seq:
+                type: string
+              address_string:
+                type: string
+    AddressesList:
+      type: object
+      properties:
+        seq:
+          type: string
+        address:
+          type: string
+    CleansedAddressesList:
+      type: object
+      properties:
+        seq:
+          type: integer
+          format: int64
+        result:
+          type: object
+          properties:
+            original:
+              type: string
+            cleansed:
+              type: object
+              properties:
+                apartment_number:
+                  type: string
+                street_number:
+                  type: string
+                street_name:
+                  type: string
+                province:
+                  type: string
+                country:
+                  type: string
+                postcode:
+                  type: string
+  requestBodies:
+    GenAddressParams:
+      description: Parameters for generating the addresses
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GenParams'
+          examples: 
+            Canadian:
+              summary: generate canadian addresses in English
+              value:
+                address_in: Canadian
+                format: JSON
+                language: in English
+            Chinese:
+              summary: generate Chinese addresses in English
+              value:
+                address_in: Chinese
+                format: JSON
+                language: in English
+            French:
+              summary: generate French addresses in French
+              value:
+                address_in: French
+                format: JSON
+                language: in French
+    CleanseAddressParams:
+      description: Addresses to cleanse and the parameters. You can replace the address list with the results from "/gen"
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/cleanseParams'
+          example:
+            params:
+              translate_output: 'true'
+            addresses:
+              '1': 123 Main St, ON, Toronto, Canada, M5V 2B7
+              '2': V6G 1C4 789 Elm St, Apt 456, Vancouver, BC
+              '3': To Steve Montreal QC 567 Apple St Canada H3B 1C8
+              '4': 987 Maple St Calgary AB
+              '5': Oak 654 Ottawa Ontario K1N 5W5 Canada
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: auth
+      in: header

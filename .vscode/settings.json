@@ -19,5 +19,8 @@
         "!Sub scalar",
         "!Transform mapping",
         "!Ref scalar",
-    ]
+    ],
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.json": "file:///workspace/address-cleansing-demo/swagger/openapi.yaml"
+    }
 }

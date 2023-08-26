@@ -23,3 +23,6 @@ tasks:
       pip install awscli
       pip install aws-sam-cli
       aws configure set region us-east-1
+  - name: install swaggerhub cli
+    command: >
+      npm i -g swaggerhub-cli

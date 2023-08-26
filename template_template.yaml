@@ -21,25 +21,7 @@ Resources:
       Name: !Sub ${AWS::StackName} - Api
       StageName: Prod
       DefinitionBody:
-        openapi: '3.0'
-        info: {}
-        paths:
-          /gen:
-            post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressGenerator.Arn}/invocations
-                credentials: !Sub arn:aws:iam::${AWS::AccountId}:role/ApiGatewayInvokeLambdaRole
-              responses: {}
-          /cleanse/gpt:
-            post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${addressCleansing.Arn}/invocations
-                credentials: !Sub arn:aws:iam::${AWS::AccountId}:role/ApiGatewayInvokeLambdaRole
-              responses: {}
+        openapi: XXX
       EndpointConfiguration: 
         Type: REGIONAL
       TracingEnabled: false

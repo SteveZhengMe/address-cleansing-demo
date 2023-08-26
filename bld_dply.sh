@@ -5,9 +5,11 @@ cp requirements.txt src/addrgen/requirements.txt
 cp requirements.txt src/cleansing/requirements.txt
 mv requirements.txt src/auth/requirements.txt
 
+poetry run python prepare_sam_template.py
 poetry run sam build --use-container
 poetry run sam deploy --no-confirm-changeset
 
 rm src/addrgen/requirements.txt
 rm src/cleansing/requirements.txt
 rm src/auth/requirements.txt
+rm ./template.yaml
