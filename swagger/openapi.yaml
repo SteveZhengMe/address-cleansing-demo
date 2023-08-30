@@ -9,9 +9,16 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 servers:
   - url: 'https://addr-clns.pilotworks.live'
+tags: 
+  - name: Generate
+    description: Generate addresses
+  - name: Cleanse
+    description: cleanse addresses
 paths:
   /gen:
     post:
+      tags:
+        - Generate
       x-amazon-apigateway-integration:
         httpMethod: POST
         type: aws_proxy
@@ -36,6 +43,8 @@ paths:
         - api_key: []
   '/cleanse/{method}':
     post:
+      tags:
+        - Cleanse
       x-amazon-apigateway-integration:
         httpMethod: POST
         type: aws_proxy
