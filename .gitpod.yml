@@ -1,7 +1,6 @@
 vscode:
     extensions:
-        - GitHub.copilot
-        - GitHub.copilot-chat
+        - Bito.Bito
         - oderwat.indent-rainbow
         - ZainChen.json
         - ms-python.python
